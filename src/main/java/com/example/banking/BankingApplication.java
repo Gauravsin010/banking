@@ -13,8 +13,10 @@ public class BankingApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		System.out.println();
 		System.out.println("Application Started....");
-		System.out.println("Welcome");
+		System.out.println();
+		System.out.println("******************************************** Welcome ********************************************");
 	}
 
 }
