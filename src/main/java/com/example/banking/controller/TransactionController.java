@@ -62,11 +62,13 @@ public class TransactionController {
     }
 
     @GetMapping("/account/{AccountNo}")
-    public ResponseEntity<List<CustomerTransaction>> getAccountDetails(@PathVariable Integer AccountNo){
+    public ResponseEntity<CustomerTransaction> getAccountDetails(@PathVariable Integer AccountNo){
         try {
             logger.info("Inside method");
             logger.info("Account No " + AccountNo);
-            return new ResponseEntity<>(customerTransactionRepo.findByAccountNo(AccountNo), HttpStatus.ACCEPTED);
+            CustomerTransaction customerTransaction = customerTransactionRepo.findByAccountNo(AccountNo).get(0);
+
+            return new ResponseEntity<>(customerTransaction, HttpStatus.ACCEPTED);
         } catch (Exception ex){
             logger.info("Exception inside getAccountDetails controller");
             throw new TransactionException("Exception inside getAccountDetails controller", ex);
