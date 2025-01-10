@@ -16,7 +16,6 @@ public class BankingApplication implements CommandLineRunner {
 		System.out.println();
 		System.out.println("Application Started....");
 		System.out.println();
-		System.out.println("******************************************** Welcome ********************************************");
 	}
 
 }
