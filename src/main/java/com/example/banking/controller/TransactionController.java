@@ -3,6 +3,7 @@ package com.example.banking.controller;
 import com.example.banking.dao.CustomerTransactionRepo;
 import com.example.banking.entity.CustomerTransaction;
 import com.example.banking.exception.TransactionException;
+import com.example.banking.service.CacheService;
 import com.example.banking.service.TransactionTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +25,18 @@ public class TransactionController {
     @Autowired
     private CustomerTransactionRepo customerTransactionRepo;
 
+    @Autowired
+    private CacheService cacheService;
+
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     @GetMapping("/getBalance/AccountNo")
     public int getBankBalance(@RequestHeader int accountNo){
         try {
             logger.info("Inside getBankBalance controller");
-            return transactionTask.getBankBalance(accountNo);
+            int balance =  transactionTask.getBankBalance(accountNo);
+            cacheService.printCac("balance");
+            return balance;
         } catch (Exception ex){
             logger.info("Exception in getBankBalance Method");
             throw new TransactionException("Exception in getBankBalance Method", ex);

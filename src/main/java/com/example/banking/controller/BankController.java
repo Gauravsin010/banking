@@ -50,6 +50,20 @@ public class BankController {
             bankDetails.setEmployeeDetailsList(employeeDetails.get());
             bankDetails.setCustomerTransactionList(customerTransaction.get());
 
+//            CompletableFuture<String> future1
+//                    = CompletableFuture.supplyAsync(() -> "Hello");
+//            CompletableFuture<String> future2
+//                    = CompletableFuture.supplyAsync(() -> "Beautiful");
+//            CompletableFuture<String> future3
+//                    = CompletableFuture.supplyAsync(() -> "World");
+//
+//            CompletableFuture<Void> combinedFuture
+//                    = CompletableFuture.allOf(future1, future2, future3);
+//
+//// ...
+//
+//            combinedFuture.get();
+
             logger.info("Returning result");
             return bankDetails;
 
