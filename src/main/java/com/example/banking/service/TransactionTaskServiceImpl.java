@@ -7,6 +7,7 @@ import com.example.banking.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 
@@ -23,6 +24,7 @@ public class TransactionTaskServiceImpl implements TransactionTask{
 
 
     @Override
+    @Cacheable(value = "balance", key = "#accountNo")
     public Integer getBankBalance(Integer accountNo) {
         try {
             logger.info("Inside getBankBalance method");
