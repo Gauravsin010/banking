@@ -1,9 +1,8 @@
 package com.example.banking.service;
 
-import com.example.banking.dao.CustomerTransactionRepo;
-import com.example.banking.dao.EmployeeDetailsRepo;
 import com.example.banking.entity.CustomerTransaction;
 import com.example.banking.entity.EmployeeDetails;
+import com.example.banking.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,7 @@ import java.util.concurrent.CompletableFuture;
 public class BankTaskServiceImpl implements BankTask {
 
     @Autowired
-    private EmployeeDetailsRepo employeeDetailsRepo;
-
-    @Autowired
-    private CustomerTransactionRepo customerTransactionRepo;
+    private CommonUtil commonUtil;
 
 
     private static final Logger logger = LoggerFactory.getLogger(BankTaskServiceImpl.class);
@@ -37,12 +33,12 @@ public class BankTaskServiceImpl implements BankTask {
             logger.info("Sleeping thread employee");
             logger.info("Start time emp {}", dateFormat.format(new Date()));
             logger.info("Thread name " + Thread.currentThread().getName());
-            Thread.sleep(10000);
+            Thread.sleep(300);
             logger.info("End time is now {}", dateFormat.format(new Date()));
         } catch (Exception ex){
             logger.info("Exception in thread");
         }
-        List<EmployeeDetails> employeeDetailsList = employeeDetailsRepo.findAll();
+        List<EmployeeDetails> employeeDetailsList = commonUtil.getEmployeeDetailsList();
         logger.info("Returning result");
         return CompletableFuture.completedFuture(employeeDetailsList);
     }
@@ -55,12 +51,12 @@ public class BankTaskServiceImpl implements BankTask {
             logger.info("Sleeping thread customer");
             logger.info("Start time cus {}", dateFormat.format(new Date()));
             logger.info("Thread name " + Thread.currentThread().getName());
-            Thread.sleep(10000);
+            Thread.sleep(300);
             logger.info("End time is now {}", dateFormat.format(new Date()));
         } catch (Exception ex){
             logger.info("Exception in thread");
         }
-        List<CustomerTransaction> customerTransactions = customerTransactionRepo.findAll();
+        List<CustomerTransaction> customerTransactions = commonUtil.getCustomerList();
         logger.info("Returning result");
         return CompletableFuture.completedFuture(customerTransactions);
     }
