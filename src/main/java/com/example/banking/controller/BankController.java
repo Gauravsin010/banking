@@ -6,6 +6,8 @@ import com.example.banking.entity.EmployeeDetails;
 import com.example.banking.exception.TransactionException;
 import com.example.banking.model.Bank.BankDetails;
 import com.example.banking.service.BankTask;
+import com.example.banking.util.CommonUtil;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +28,16 @@ public class BankController {
     @Autowired
     private BankTask bankTask;
 
+    @Autowired
+    private CommonUtil commonUtil;
+
     private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 
     @GetMapping("/allAccountInfo")
     public List<CustomerTransaction> getAllCustomerInfo(){
         try {
             logger.info("Inside allAccountInfo controller");
-            List<CustomerTransaction> customerTransactions = customerTransactionRepo.findAll();
-            return customerTransactions;
+            return commonUtil.getCustomerList();
         } catch (Exception ex){
             logger.info("Exception inside allAccountInfo controller");
             throw new TransactionException("Exception inside allAccountInfo", ex);
@@ -41,28 +45,17 @@ public class BankController {
     }
 
     @GetMapping("/getAll")
-    public BankDetails getAll(){
+    public BankDetails getAll(HttpSession httpSession){
         try {
             logger.info("Inside allAccountInfo controller");
+
+            String sessionId = httpSession.getId();
+            logger.info("Session " + sessionId);
             CompletableFuture<List<EmployeeDetails>> employeeDetails = bankTask.getEmployeeDetails();
             CompletableFuture<List<CustomerTransaction>> customerTransaction = bankTask.getCustomerDetails();
             BankDetails bankDetails = new BankDetails();
             bankDetails.setEmployeeDetailsList(employeeDetails.get());
             bankDetails.setCustomerTransactionList(customerTransaction.get());
-
-//            CompletableFuture<String> future1
-//                    = CompletableFuture.supplyAsync(() -> "Hello");
-//            CompletableFuture<String> future2
-//                    = CompletableFuture.supplyAsync(() -> "Beautiful");
-//            CompletableFuture<String> future3
-//                    = CompletableFuture.supplyAsync(() -> "World");
-//
-//            CompletableFuture<Void> combinedFuture
-//                    = CompletableFuture.allOf(future1, future2, future3);
-//
-//// ...
-//
-//            combinedFuture.get();
 
             logger.info("Returning result");
             return bankDetails;

@@ -78,4 +78,16 @@ public class CustomerTransaction {
     public void setAccountType(String accountType) {
         this.accountType = accountType;
     }
+
+    @Override
+    public String toString() {
+        return "CustomerTransaction{" +
+                "accountNo=" + accountNo +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address='" + address + '\'' +
+                ", balance=" + balance +
+                ", accountType='" + accountType + '\'' +
+                '}';
+    }
 }

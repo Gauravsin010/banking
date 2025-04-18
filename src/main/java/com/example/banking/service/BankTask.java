@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface BankTask {
 
-    public CompletableFuture<List<EmployeeDetails>> getEmployeeDetails() throws InterruptedException;
+    public CompletableFuture<List<EmployeeDetails>> getEmployeeDetails();
 
     public CompletableFuture<List<CustomerTransaction>> getCustomerDetails();
 
