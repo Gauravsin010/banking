@@ -4,6 +4,7 @@ import com.example.banking.dao.CustomerTransactionRepo;
 import com.example.banking.entity.CustomerTransaction;
 import com.example.banking.exception.TransactionException;
 import com.example.banking.util.CommonUtil;
+import com.example.banking.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class TransactionTaskServiceImpl implements TransactionTask{
     private static final Logger logger = LoggerFactory.getLogger(TransactionTaskServiceImpl.class);
 
 
-    @Override
-    @Cacheable(value = "balance", key = "#accountNo")
+
+    @Cacheable(Constants.BALANCE)
     public Integer getBankBalance(Integer accountNo) {
         try {
             logger.info("Inside getBankBalance method");

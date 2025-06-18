@@ -1,11 +1,19 @@
 package com.example.banking.service;
 
+import com.example.banking.dao.CustomerTransactionRepo;
+import com.example.banking.dao.EmployeeDetailsRepo;
+import com.example.banking.entity.CustomerTransaction;
+import com.example.banking.entity.EmployeeDetails;
+import com.example.banking.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CacheService {
@@ -15,6 +23,12 @@ public class CacheService {
     @Autowired
     public CacheManager cacheManager;
 
+    @Autowired
+    private CustomerTransactionRepo customerTransactionRepo;
+
+    @Autowired
+    private EmployeeDetailsRepo employeeDetailsRepo;
+
     public void printCac(String name){
         Cache cache = cacheManager.getCache(name);
         if (cache != null){
@@ -22,6 +36,36 @@ public class CacheService {
         } else {
             logger.info("Empty " + name);
 
+        }
+    }
+
+    public void refreshCacheBalance() {
+        try {
+            logger.info("Refreshing cache customers");
+            //cacheManager.getCacheNames().forEach(cache -> logger.info(" All - > " + cacheManager.getCache(cache).getNativeCache().toString()));
+            List<CustomerTransaction> list = customerTransactionRepo.findAll();
+            if (list.size() > 0 && list != null) {
+                cacheManager.getCache(Constants.BALANCE).clear();
+                list.forEach(ls -> cacheManager.getCache(Constants.BALANCE).put(ls.getAccountNo(), ls.getBalance()));
+                cacheManager.getCache(Constants.CUSTOMER_LIST).clear();
+                cacheManager.getCache(Constants.CUSTOMER_LIST).put(SimpleKey.EMPTY, list);
+                //cacheManager.getCacheNames().forEach(cache -> logger.info(" After updating cache- > " + cacheManager.getCache(cache).getNativeCache().toString()));
+            }
+        } catch (Exception ex){
+            logger.info("Exception in refreshing cache customers " + ex.getMessage());
+        }
+    }
+
+    public void refreshCacheEmployees() {
+        try {
+            logger.info("Refreshing cache employees");
+            List<EmployeeDetails> employeeDetailsList = employeeDetailsRepo.findAll();
+            if (employeeDetailsList.size() > 0 && employeeDetailsList != null) {
+                cacheManager.getCache(Constants.EMPLOYEE_LIST).clear();
+                cacheManager.getCache(Constants.EMPLOYEE_LIST).put(SimpleKey.EMPTY, employeeDetailsList);
+            }
+        } catch (Exception ex){
+            logger.info("Exception in refreshing cache employees " + ex.getMessage());
         }
     }
 }

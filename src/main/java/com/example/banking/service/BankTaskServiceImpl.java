@@ -4,9 +4,12 @@ import com.example.banking.dao.CustomerTransactionRepo;
 import com.example.banking.dao.EmployeeDetailsRepo;
 import com.example.banking.entity.CustomerTransaction;
 import com.example.banking.entity.EmployeeDetails;
+import com.example.banking.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +22,13 @@ import java.util.concurrent.CompletableFuture;
 public class BankTaskServiceImpl implements BankTask {
 
     @Autowired
-    private EmployeeDetailsRepo employeeDetailsRepo;
+    private CommonUtil commonUtil;
 
     @Autowired
     private CustomerTransactionRepo customerTransactionRepo;
+
+    @Autowired
+    private EmployeeDetailsRepo employeeDetailsRepo;
 
 
     private static final Logger logger = LoggerFactory.getLogger(BankTaskServiceImpl.class);
@@ -33,16 +39,16 @@ public class BankTaskServiceImpl implements BankTask {
     @Override
     public CompletableFuture<List<EmployeeDetails>> getEmployeeDetails() {
         logger.info("Inside getEmployeeDetails method");
-        try {
-            logger.info("Sleeping thread employee");
-            logger.info("Start time emp {}", dateFormat.format(new Date()));
-            logger.info("Thread name " + Thread.currentThread().getName());
-            Thread.sleep(10000);
-            logger.info("End time is now {}", dateFormat.format(new Date()));
-        } catch (Exception ex){
-            logger.info("Exception in thread");
-        }
-        List<EmployeeDetails> employeeDetailsList = employeeDetailsRepo.findAll();
+//        try {
+//            logger.info("Sleeping thread employee");
+//            logger.info("Start time emp {}", dateFormat.format(new Date()));
+//            logger.info("Thread name " + Thread.currentThread().getName());
+//            //Thread.sleep(300);
+//            //logger.info("End time is now {}", dateFormat.format(new Date()));
+//        } catch (Exception ex){
+//            logger.info("Exception in thread");
+//        }
+        List<EmployeeDetails> employeeDetailsList = commonUtil.getEmployeeDetailsList();
         logger.info("Returning result");
         return CompletableFuture.completedFuture(employeeDetailsList);
     }
@@ -51,17 +57,43 @@ public class BankTaskServiceImpl implements BankTask {
     @Override
     public CompletableFuture<List<CustomerTransaction>> getCustomerDetails() {
         logger.info("Inside getCustomerDetails method");
-        try {
-            logger.info("Sleeping thread customer");
-            logger.info("Start time cus {}", dateFormat.format(new Date()));
-            logger.info("Thread name " + Thread.currentThread().getName());
-            Thread.sleep(10000);
-            logger.info("End time is now {}", dateFormat.format(new Date()));
-        } catch (Exception ex){
-            logger.info("Exception in thread");
-        }
-        List<CustomerTransaction> customerTransactions = customerTransactionRepo.findAll();
+//        try {
+//            logger.info("Sleeping thread customer");
+//            logger.info("Start time cus {}", dateFormat.format(new Date()));
+//            logger.info("Thread name " + Thread.currentThread().getName());
+//            //Thread.sleep(300);
+//            //logger.info("End time is now {}", dateFormat.format(new Date()));
+//        } catch (Exception ex){
+//            logger.info("Exception in thread");
+//        }
+        List<CustomerTransaction> customerTransactions = commonUtil.getCustomerList();
         logger.info("Returning result");
         return CompletableFuture.completedFuture(customerTransactions);
+    }
+
+    @Override
+    @Async("asyncExecutor")
+    public CompletableFuture<List<EmployeeDetails>> getEmployeeDetailsDb() {
+        List<EmployeeDetails> employeeDetailsList = employeeDetailsRepo.findAll();
+        return CompletableFuture.completedFuture(employeeDetailsList);
+    }
+
+    @Override
+    @Async("asyncExecutor")
+    public CompletableFuture<List<CustomerTransaction>> getCustomerDetailsDb() {
+        List<CustomerTransaction> customerTransactions = customerTransactionRepo.findAll();
+        return CompletableFuture.completedFuture(customerTransactions);
+    }
+
+    @Override
+    public ResponseEntity<String> createAccount(CustomerTransaction customerTransaction) {
+        try {
+            CustomerTransaction cst = customerTransactionRepo.save(customerTransaction);
+            logger.info("Account id " + cst.getAccountNo());
+            return new ResponseEntity<>("Account created successfully, Account id " + cst.getAccountNo(), HttpStatus.CREATED);
+        } catch (Exception ex){
+            logger.info("Exception in create account " + ex.getMessage());
+            return new ResponseEntity<>("Error in creating " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

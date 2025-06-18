@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    <link rel="stylesheet" href="styles.css">-->
+    <link th:href="@{/styles/styles.css}" rel="stylesheet" />
+    <title>Login page</title>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="nav-brand">HomePage</div>
+<!--        <ul class="nav-links">-->
+<!--            <li><a href="#home">Home</a></li>-->
+<!--            <li><a href="#about">About</a></li>-->
+<!--            <li><a th:href="@{/getAccountsDetailsWeb}">Services</a></li>-->
+<!--            <li><a href="#contact">Contact</a></li>-->
+<!--        </ul>-->
+    </nav>
+</header>
+<h1>Login page</h1>
+<p th:if="${loginError}" class="error">Wrong user or password</p>
+<form th:action="@{/login.html}" method="post">
+    <label for="username">Username</label>:
+    <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+    <label for="password">Password</label>:
+    <input type="password" id="password" name="password" /> <br />
+    <input type="submit" value="Log in" />
+</form>
+<footer>
+    <nav class="footer-nav">
+        <ul>
+            <li><a href="#terms">Terms</a></li>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#help">Help</a></li>
+        </ul>
+    </nav>
+</footer>
+</body>
+</html>
