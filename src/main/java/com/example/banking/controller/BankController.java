@@ -7,13 +7,14 @@ import com.example.banking.exception.TransactionException;
 import com.example.banking.model.Bank.BankDetails;
 import com.example.banking.service.BankTask;
 import com.example.banking.util.CommonUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,11 @@ public class BankController {
         }
     }
 
+    @GetMapping("/getToken")
+    public CsrfToken getCsrfToken(HttpServletRequest httpServletRequest){
+        return (CsrfToken) httpServletRequest.getAttribute("_csrf");
+    }
+
     @GetMapping("/getAll")
     public BankDetails getAll(HttpSession httpSession){
         try {
@@ -53,6 +59,47 @@ public class BankController {
             logger.info("Session " + sessionId);
             CompletableFuture<List<EmployeeDetails>> employeeDetails = bankTask.getEmployeeDetails();
             CompletableFuture<List<CustomerTransaction>> customerTransaction = bankTask.getCustomerDetails();
+            BankDetails bankDetails = new BankDetails();
+            bankDetails.setEmployeeDetailsList(employeeDetails.get());
+            bankDetails.setCustomerTransactionList(customerTransaction.get());
+
+            logger.info("Returning result");
+            return bankDetails;
+
+        } catch (Exception ex){
+            logger.info("Exception inside getAll controller");
+            throw new TransactionException("Exception inside getAll", ex);
+        }
+    }
+
+    @PostMapping("/account")
+    public ResponseEntity<String> createAccount(@RequestBody CustomerTransaction customerTransaction, HttpSession httpSession){
+        try {
+            logger.info("Inside allAccountInfo controller");
+
+            String sessionId = httpSession.getId();
+            logger.info("Session " + sessionId);
+            ResponseEntity<String> response = bankTask.createAccount(customerTransaction);
+
+            logger.info("Returning result");
+            return response;
+
+        } catch (Exception ex){
+            logger.info("Exception inside getAll controller");
+            throw new TransactionException("Exception inside getAll", ex);
+        }
+    }
+
+
+    @GetMapping("getAll/db-call")
+    public BankDetails getAllDB(HttpSession httpSession){
+        try {
+            logger.info("Inside getAllDB controller");
+
+            String sessionId = httpSession.getId();
+            logger.info("Session " + sessionId);
+            CompletableFuture<List<EmployeeDetails>> employeeDetails = bankTask.getEmployeeDetailsDb();
+            CompletableFuture<List<CustomerTransaction>> customerTransaction = bankTask.getCustomerDetailsDb();
             BankDetails bankDetails = new BankDetails();
             bankDetails.setEmployeeDetailsList(employeeDetails.get());
             bankDetails.setCustomerTransactionList(customerTransaction.get());

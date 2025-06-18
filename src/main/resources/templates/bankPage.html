@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Gaurav Bank</title>
+</head>
+<body>
+<header>
+  <nav class="navbar">
+    <div class="nav-brand">Homepage</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a th:href="@{/getAccountsDetailsWeb}">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="form-section">
+  <h1>Submit Your Information</h1>
+  <form action="#" method="post">
+    <label for="firstname">First Name:</label>
+    <input type="text" id="firstname" name="firstname" required>
+
+    <label for="lastname">Last Name:</label>
+    <input type="text" id="lastname" name="lastname" required>
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required>
+
+    <label for="balance">Balance:</label>
+    <input type="text" id="balance" name="balance" required>
+
+    <label for="accounttype">Account Type:</label>
+    <input type="text" id="accounttype" name="accounttype" required>
+
+    <button type="submit">Submit</button>
+  </form>
+</main>
+
+<footer>
+  <nav class="footer-nav">
+    <ul>
+      <li><a href="#terms">Terms</a></li>
+      <li><a href="#privacy">Privacy Policy</a></li>
+      <li><a href="#help">Help</a></li>
+    </ul>
+  </nav>
+</footer>
+</body>
+</html>

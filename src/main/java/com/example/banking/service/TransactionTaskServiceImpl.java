@@ -24,7 +24,7 @@ public class TransactionTaskServiceImpl implements TransactionTask{
     private static final Logger logger = LoggerFactory.getLogger(TransactionTaskServiceImpl.class);
 
 
-    @Override
+
     @Cacheable(Constants.BALANCE)
     public Integer getBankBalance(Integer accountNo) {
         try {
